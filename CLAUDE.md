@@ -6,11 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `CONTEXT.md` is the authoritative design document for this project. Read it before making any design or architecture decision. It states: "Follow it precisely — do not infer or introduce approaches, patterns, or scope that are not explicitly described here."
 
-This repo is early — `apps/api` is a scaffolded Fastify app with a placeholder route. Most of the stack below (chess.js, MCP SDK, Socket.IO, Drizzle, Zod) is agreed convention, not yet installed.
+This repo is early — `apps/backend` is a scaffolded Fastify app with a placeholder route. Most of the stack below (chess.js, MCP SDK, Socket.IO, Drizzle, Zod) is agreed convention, not yet installed.
 
 ## Workspace
 
-Nx monorepo with pnpm workspaces. Backend lives at `apps/api`; clients get their own `apps/*`. Shared code goes in `libs/*`.
+Nx monorepo with pnpm workspaces. Backend lives at `apps/backend`; clients get their own `apps/*`. Shared code goes in `libs/*`.
 
 - Package manager: **pnpm**, never npm/yarn. New workspace-root deps need `pnpm add -Dw`.
 - pnpm 11 blocks package build scripts by default. When install fails with `ERR_PNPM_IGNORED_BUILDS`, add the package to `allowBuilds:` in `pnpm-workspace.yaml` — not to `package.json`, which pnpm 11 no longer reads.
@@ -44,7 +44,7 @@ These were chosen deliberately over alternatives; do not swap them:
 
 ## Layering (hard rules)
 
-Inside `apps/api/src`: `controllers/` → `services/` → `repositories/`, with `models/domain` (entity invariants) separate from `models/schema` (Drizzle tables). `CONTEXT.md` §10 writes these as `/src/...`; in this monorepo they live under `apps/api/src/`.
+Inside `apps/backend/src`: `controllers/` → `services/` → `repositories/`, with `models/domain` (entity invariants) separate from `models/schema` (Drizzle tables). `CONTEXT.md` §10 writes these as `/src/...`; in this monorepo they live under `apps/backend/src/`.
 
 - Controllers hold no chess/business logic — validate with Zod, delegate to a service, format the response.
 - Services never touch Drizzle or know about SQL/tables — they call repositories only.
